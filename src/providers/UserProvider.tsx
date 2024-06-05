@@ -1,6 +1,6 @@
 "use client";
 
-import { User } from "@/types/User";
+import { User } from "@/types/user";
 import React, {
   PropsWithChildren,
   useContext,

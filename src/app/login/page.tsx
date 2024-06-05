@@ -1,13 +1,14 @@
 "use client";
-import { userSchema } from "@/schemas/User";
-import { User } from "@/types/User";
+import { userSchema } from "@/schemas/user";
+import { User } from "@/types/user";
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useUserContext } from "@/providers/UserProvider";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import { redirect, usePathname } from "next/navigation";
+import FormText from "@/components/form/FormText";
 
 type Tab = "sign-in" | "sign-up";
 
@@ -105,40 +106,32 @@ const LoginPage = () => {
           Sign up
         </a>
       </div>
-      <form
-        className="flex flex-col items-center gap-4"
-        onSubmit={methods.handleSubmit(onSubmit)}
-      >
-        <input
-          type="text"
-          {...methods.register("login")}
-          placeholder="Login"
-          className="input input-bordered w-full max-w-xs"
-        />
-        <input
-          type="password"
-          {...methods.register("password")}
-          placeholder="Password"
-          className="input input-bordered w-full max-w-xs"
-        />
-
-        <div className="text-red-600">{errorMessage}</div>
-        <div className="text-green-600">{successMessage}</div>
-
-        <button
-          type="submit"
-          disabled={useLogin.isPending}
-          className="btn btn-primary px-12"
+      <FormProvider {...methods}>
+        <form
+          className="flex flex-col items-center gap-4 mt-4"
+          onSubmit={methods.handleSubmit(onSubmit)}
         >
-          {tab === "sign-in"
-            ? useLogin.isPending
-              ? "Signing in..."
-              : "Sign In"
-            : useLogin.isPending
-              ? "Signing up..."
-              : "Sign Up"}
-        </button>
-      </form>
+          <FormText name="login" placeholder="Login" />
+          <FormText name="password" placeholder="Password" type="password" />
+
+          <div className="text-red-600">{errorMessage}</div>
+          <div className="text-green-600">{successMessage}</div>
+
+          <button
+            type="submit"
+            disabled={useLogin.isPending}
+            className="btn btn-primary px-12"
+          >
+            {tab === "sign-in"
+              ? useLogin.isPending
+                ? "Signing in..."
+                : "Sign In"
+              : useLogin.isPending
+                ? "Signing up..."
+                : "Sign Up"}
+          </button>
+        </form>
+      </FormProvider>
     </div>
   );
 };

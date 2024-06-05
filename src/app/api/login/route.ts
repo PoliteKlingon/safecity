@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import fs from "fs";
 import path from "path";
-import { User } from "@/types/User";
-import { userSchema } from "@/schemas/User";
+import { User } from "@/types/user";
+import { userSchema } from "@/schemas/user";
 
 type RequestData = {
   type: "sign-up" | "sign-in";

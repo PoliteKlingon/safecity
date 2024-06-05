@@ -1,5 +1,5 @@
 "use client";
-import React, { PropsWithChildren } from "react";
+import React, { PropsWithChildren, useEffect } from "react";
 import UserProvider from "./UserProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
