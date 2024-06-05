@@ -1,4 +1,5 @@
 "use client";
+import { useUserContext } from "@/providers/UserProvider";
 import {
   ExclamationTriangleIcon,
   HomeIcon,
@@ -13,6 +14,7 @@ type AppParts = "home" | "map" | "warnings";
 const Navigation = () => {
   const [page, setPage] = useState<AppParts>("home");
   const pathname = usePathname();
+  const { user } = useUserContext();
 
   useEffect(() => {
     switch (pathname) {
@@ -30,6 +32,8 @@ const Navigation = () => {
         break;
     }
   }, [pathname]);
+
+  if (!user) return null;
 
   return (
     <nav className="btm-nav">

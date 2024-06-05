@@ -1,3 +1,6 @@
+## Safecity
+Mobile app - no desktop responsivity yet!
+
 ## Install
 `pnpm i`
 

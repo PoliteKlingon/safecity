@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Navigation from "@/components/Navigation";
+import Providers from "@/providers/Providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,9 +21,11 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <div className="h-screen w-screen">
-          <Header />
-          <main className="overflow-y-auto py-16 h-screen">{children}</main>
-          <Navigation />
+          <Providers>
+            <Header />
+            <main className="overflow-y-auto py-16 h-screen">{children}</main>
+            <Navigation />
+          </Providers>
         </div>
       </body>
     </html>
