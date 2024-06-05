@@ -19,27 +19,34 @@ const UserContext = createContext<UserContextType>({
   setUser: () => {},
 });
 
-export const useUserContext = () => useContext(UserContext);
+export const useUserContext = () => {
+  const context = useContext(UserContext);
+  if (context === undefined) {
+    throw new Error("useUserContext must be used within a UserProvider");
+  }
+  return context;
+};
 
 const UserProvider = ({ children }: PropsWithChildren) => {
   const [user, setUser] = useState<User | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    if (!window) return;
-
     const storedUser = window.sessionStorage.getItem("user");
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser);
+      setIsLoaded(true);
     }
   }, []);
 
   useEffect(() => {
-    if (!window) return;
-
     if (user) {
       window.sessionStorage.setItem("user", JSON.stringify(user));
     } else {
-      window.sessionStorage.removeItem("user");
+      if (isLoaded) {
+        window.sessionStorage.removeItem("user");
+      }
     }
   }, [user]);
 

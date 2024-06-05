@@ -7,6 +7,7 @@ const ProfilePage = () => {
   return (
     <div className="flex flex-col items-center justify-center w-full h-full gap-6">
       <UserIcon width={"5rem"} />
+      <span className="text-2xl">{user?.name}</span>
       <span className="text-lg">Login: {user?.login}</span>
       <button
         onClick={() => {

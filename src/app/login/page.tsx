@@ -61,12 +61,13 @@ const LoginPage = () => {
           });
 
         if (res.status === 200) {
-          setUser(data);
+          setUser(res.data);
         }
       } else {
         const res = await axios
           .post("/api/login", {
             type: "sign-up",
+            name: "Karel",
             ...data,
           })
           .catch((error) => {

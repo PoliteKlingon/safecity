@@ -13,7 +13,6 @@ const UserRedirect = () => {
 
   // if no user is logged in, redirect to the login page
   useEffect(() => {
-    "HUH";
     if (!user && pathname !== "/login") {
       redirect("/login");
     }
