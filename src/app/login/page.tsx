@@ -1,6 +1,6 @@
 "use client";
-import { userSchema } from "@/schemas/user";
-import { User } from "@/types/user";
+import { loginUserSchema, userSchema } from "@/schemas/user";
+import { loginUser } from "@/types/user";
 import React, { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,10 +24,14 @@ const LoginPage = () => {
     }
   }, [user]);
 
-  const methods = useForm<User>({ resolver: zodResolver(userSchema) });
+  const methods = useForm<loginUser>({
+    resolver: zodResolver(loginUserSchema),
+    defaultValues: { type: tab },
+  });
 
   useEffect(() => {
     methods.reset();
+    methods.setValue("type", tab);
     setErrorMessage("");
   }, [tab]);
 
@@ -48,32 +52,21 @@ const LoginPage = () => {
   }, [successMessage]);
 
   const useLogin = useMutation({
-    mutationFn: async (data: User) => {
+    mutationFn: async (data: loginUser) => {
       if (tab === "sign-in") {
-        const res = await axios
-          .post("/api/login", {
-            type: "sign-in",
-            ...data,
-          })
-          .catch((error) => {
-            setErrorMessage(error.response.data);
-            return error;
-          });
+        const res = await axios.post("/api/login", data).catch((error) => {
+          setErrorMessage(error.response.data);
+          return error;
+        });
 
         if (res.status === 200) {
           setUser(res.data);
         }
       } else {
-        const res = await axios
-          .post("/api/login", {
-            type: "sign-up",
-            name: "Karel",
-            ...data,
-          })
-          .catch((error) => {
-            setErrorMessage(error.response.data);
-            return error;
-          });
+        const res = await axios.post("/api/login", data).catch((error) => {
+          setErrorMessage(error.response.data);
+          return error;
+        });
 
         if (res.status === 200) {
           setTab("sign-in");
@@ -83,7 +76,7 @@ const LoginPage = () => {
     },
   });
 
-  const onSubmit = (data: User) => {
+  const onSubmit = (data: loginUser) => {
     useLogin.mutate(data);
   };
 
@@ -112,8 +105,16 @@ const LoginPage = () => {
           className="flex flex-col items-center gap-4 mt-4"
           onSubmit={methods.handleSubmit(onSubmit)}
         >
+          {tab === "sign-up" && <FormText name="name" placeholder="Name" />}
           <FormText name="login" placeholder="Login" />
           <FormText name="password" placeholder="Password" type="password" />
+          {tab === "sign-up" && (
+            <FormText
+              name="passwordAgain"
+              type="password"
+              placeholder="Password Again"
+            />
+          )}
 
           <div className="text-red-600">{errorMessage}</div>
           <div className="text-green-600">{successMessage}</div>
