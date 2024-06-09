@@ -5,16 +5,21 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Camera from "@/components/home/Camera";
 import { FormProvider, useForm } from "react-hook-form";
 import { useState } from "react";
-import FormText from "@/components/form/FormText";
 import { getHint } from "@/components/home/hints";
 import FormTextArea from "@/components/form/FormTextArea";
 import FormBoolean from "@/components/form/FormBoolean";
-import { CheckIcon, PlusIcon } from "@heroicons/react/24/outline";
+import {
+  CheckIcon,
+  PlusIcon,
+  TrashIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
+import { ErrorMessage } from "@hookform/error-message";
 
 const HomePage = () => {
   const methods = useForm<HomeFormType>({
     resolver: zodResolver(homeFormSchema),
-    defaultValues: { photos: [] },
+    defaultValues: { photos: [], contactPolice: false },
   });
   const [isCameraOpen, setIsCameraOpen] = useState(false);
 
@@ -22,6 +27,8 @@ const HomePage = () => {
 
   const onSubmit = (data: HomeFormType) => {
     console.log(data);
+    methods.reset();
+    setIsCameraOpen(true);
   };
 
   return (
@@ -35,15 +42,32 @@ const HomePage = () => {
             {photos &&
               photos.length > 0 &&
               photos.map((photo: string, index: number) => (
-                <img className="w-52 h-52" key={index} src={photo} />
+                <div className="relative shrink-0">
+                  <img className="h-52 rounded-lg" key={index} src={photo} />
+                  <button
+                    type="button"
+                    className="btn btn-link absolute top-0 left-0"
+                    onClick={() => {
+                      photos.splice(index, 1);
+                      methods.setValue("photos", photos);
+                    }}
+                  >
+                    <TrashIcon width={20} height={20} />
+                  </button>
+                </div>
               ))}
             <div
-              className="w-52 h-52 flex cursor-pointer flex-row items-center justify-center bg-gray-700"
+              className="w-52 h-52 shrink-0 rounded-lg flex cursor-pointer flex-row items-center justify-center bg-gray-700"
               onClick={() => setIsCameraOpen(true)}
             >
               <PlusIcon width={30} height={30} />
             </div>
           </div>
+          <ErrorMessage
+            name="photos"
+            errors={methods.formState.errors}
+            render={({ message }) => <p className="text-red-600">{message}</p>}
+          />
 
           <FormTextArea
             placeholder={getHint()}
