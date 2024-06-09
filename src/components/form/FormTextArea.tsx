@@ -6,28 +6,28 @@ type Props = {
   name: string;
   label?: string;
   placeholder?: string;
-  type?: string;
   className?: string;
   inputClassName?: string;
+  rows?: number;
 };
 
-const FormText = ({
+const FormTextArea = ({
   name,
   label,
   placeholder,
-  type,
   className,
   inputClassName,
+  rows,
 }: Props) => {
   const methods = useFormContext();
   return (
     <div className={className ?? ""}>
       {label && <label className="text-md pl-4">{label}</label>}
-      <input
-        type={type ?? "text"}
+      <textarea
         {...methods.register(name)}
         placeholder={placeholder}
-        className={`input input-bordered w-full  my-1 ${inputClassName ?? ""}`}
+        className={`input input-bordered w-full my-1 ${inputClassName ?? ""}`}
+        rows={rows}
       />
       <ErrorMessage
         errors={methods.formState.errors}
@@ -38,4 +38,4 @@ const FormText = ({
   );
 };
 
-export default FormText;
+export default FormTextArea;

@@ -4,31 +4,20 @@ import { ErrorMessage } from "@hookform/error-message";
 
 type Props = {
   name: string;
-  label?: string;
-  placeholder?: string;
-  type?: string;
+  label: string;
   className?: string;
-  inputClassName?: string;
 };
 
-const FormText = ({
-  name,
-  label,
-  placeholder,
-  type,
-  className,
-  inputClassName,
-}: Props) => {
+const FormBoolean = ({ name, label, className }: Props) => {
   const methods = useFormContext();
   return (
-    <div className={className ?? ""}>
-      {label && <label className="text-md pl-4">{label}</label>}
+    <div className={`flex flex-row items-center ${className ?? ""}`}>
       <input
-        type={type ?? "text"}
+        type="checkbox"
         {...methods.register(name)}
-        placeholder={placeholder}
-        className={`input input-bordered w-full  my-1 ${inputClassName ?? ""}`}
+        className={`checkbox-primary checkbox`}
       />
+      <label className="text-md pl-4">{label}</label>
       <ErrorMessage
         errors={methods.formState.errors}
         name={name}
@@ -38,4 +27,4 @@ const FormText = ({
   );
 };
 
-export default FormText;
+export default FormBoolean;
