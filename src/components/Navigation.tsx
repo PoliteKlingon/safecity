@@ -36,7 +36,7 @@ const Navigation = () => {
   if (!user) return null;
 
   return (
-    <nav className="btm-nav">
+    <nav className="btm-nav z-50">
       <Link
         href={"/warnings"}
         className={`text-primary ${page === "warnings" ? "active" : ""}`}

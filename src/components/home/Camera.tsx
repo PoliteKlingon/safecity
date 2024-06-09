@@ -23,10 +23,10 @@ const Camera = ({ onShot, isOpen, canBeClosed, close }: Props) => {
   const [numberOfCameras, setNumberOfCameras] = useState(0);
   if (!isOpen) return null;
   return (
-    <>
+    <div className="z-20">
       <CameraComponent
         ref={cameraRef}
-        numberOfFrontCamerasCallback={setNumberOfCameras}
+        numberOfBackCamerasCallback={setNumberOfCameras}
         facingMode="back"
         errorMessages={{
           noCameraAccessible: "No camera found",
@@ -47,7 +47,7 @@ const Camera = ({ onShot, isOpen, canBeClosed, close }: Props) => {
         <button
           type="button"
           className="btn bg-teal-950 rounded-full w-20 h-20 p-0"
-          onClick={() => onShot(cameraRef?.current?.takePhoto())}
+          onClick={() => onShot(cameraRef?.current?.takePhoto().toString())}
         >
           <CameraIcon width={30} height={30} />
         </button>
@@ -69,7 +69,7 @@ const Camera = ({ onShot, isOpen, canBeClosed, close }: Props) => {
           <XMarkIcon width={20} height={20} />
         </button>
       )}
-    </>
+    </div>
   );
 };
 
