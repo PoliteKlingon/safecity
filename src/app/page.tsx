@@ -15,8 +15,15 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { ErrorMessage } from "@hookform/error-message";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import Loading from "@/components/Loading";
 
 const HomePage = () => {
+  const postWarning = useMutation({
+    mutationFn: (data: HomeFormType) => axios.post("/api/reports", data),
+  });
+
   const methods = useForm<HomeFormType>({
     resolver: zodResolver(homeFormSchema),
     defaultValues: {
@@ -33,6 +40,7 @@ const HomePage = () => {
 
   const onSubmit = (data: HomeFormType) => {
     console.log(data);
+    postWarning.mutate(data);
     methods.reset();
     setIsCameraOpen(true);
   };
@@ -106,7 +114,7 @@ const HomePage = () => {
           {!latitude ||
             (latitude < -90 && (
               <div className="flex flex-row gap-2 ml-2">
-                <span className="loading loading-spinner loading-xs"></span>
+                <Loading />
                 Getting your current location...
               </div>
             ))}
@@ -135,9 +143,13 @@ const HomePage = () => {
             className="fixed bottom-16 right-0 m-4 z-10 w-16 h-16 rounded-full btn btn-primary"
             type="button"
             onClick={methods.handleSubmit(onSubmit)}
-            disabled={!latitude || latitude < -90}
+            disabled={!latitude || latitude < -90 || postWarning.isPending}
           >
-            <CheckIcon width={30} height={30} />
+            {postWarning.isPending ? (
+              <Loading />
+            ) : (
+              <CheckIcon width={30} height={30} />
+            )}
           </button>
         </form>
       </FormProvider>
