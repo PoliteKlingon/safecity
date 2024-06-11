@@ -1,9 +1,11 @@
 "use client";
 
 import Loading from "@/components/Loading";
+import TipsDialog from "@/components/warnings/TipsDialog";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { SirenIcon } from "lucide-react";
+import { ShieldPlusIcon, SirenIcon } from "lucide-react";
+import { useState } from "react";
 
 const WarningsPage = () => {
   const warnings = useQuery({
@@ -26,9 +28,25 @@ const WarningsPage = () => {
 
   return (
     <>
+      <button
+        className="bg-accent py-3 px-4 shadow-2xl text-black m-3 z-50 rounded-full right-0 absolute bottom-16 flex flex-row gap-2"
+        onClick={() =>
+          (
+            document.getElementById("my_modal_1") as HTMLDialogElement
+          )?.showModal()
+        }
+      >
+        <ShieldPlusIcon /> Safety Tips & Tricks
+      </button>
+
+      <TipsDialog />
+
+      <div className="my-2 p-2 border-b-[1px] border-grey-500 text-2xl">
+        Reported incidents near you
+      </div>
       {warnings.data.data.map((warning) => (
         <div
-          className="my-2 p-2 border-y-[1px] border-grey-500 relative"
+          className="my-2 p-2 border-b-[1px] border-grey-500 relative"
           key={warning.photos[0]}
         >
           {warning.contactpolice && (
@@ -48,3 +66,9 @@ const WarningsPage = () => {
 };
 
 export default WarningsPage;
+
+/**
+ * TODO
+ * datum pridani reportu
+ * informace jestli to zadalo mesto jako lokal authority
+ */
