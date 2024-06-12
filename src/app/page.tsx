@@ -69,7 +69,7 @@ const HomePage = () => {
   const [geocoder, setGeocoder] = useState<any>(null);
   useEffect(() => {
     const loader = new Loader({
-      apiKey: "AIzaSyCIo5k1cgS12vTRTdRRTOZDMV0czVhGOlY",
+      apiKey: process.env.NEXT_PUBLIC_GOOGLE_KEY!,
       version: "weekly",
     });
     loader.load().then(() => {
