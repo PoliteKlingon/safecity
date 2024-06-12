@@ -66,9 +66,3 @@ const WarningsPage = () => {
 };
 
 export default WarningsPage;
-
-/**
- * TODO
- * datum pridani reportu
- * informace jestli to zadalo mesto jako lokal authority
- */

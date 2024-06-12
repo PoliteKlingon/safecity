@@ -40,7 +40,28 @@ const parsePostgresArray = (arrayString: string): string[] => {
 
 const insertReport = async (report: HomeFormType) => {
   const formattedPhotos = `{${report.photos.map((photo) => `"${photo}"`).join(",")}}`;
-  return await sql`INSERT INTO reports (photos, latitude, longitude, note, contactPolice) VALUES (${formattedPhotos}, ${report.latitude}, ${report.longitude}, ${report.note}, ${report.contactPolice})`;
+  return await sql`
+  INSERT INTO 
+    reports (
+      photos, 
+      latitude, 
+      longitude, 
+      address, 
+      date, 
+      note, 
+      contactPolice, 
+      isMunicipality
+    ) VALUES (
+      ${formattedPhotos}, 
+      ${report.latitude}, 
+      ${report.longitude},
+      ${report.address},
+      ${report.date},
+      ${report.note}, 
+      ${report.contactPolice},
+      ${report.isMunicipality}
+    )
+  `;
 };
 
 export async function POST(request: Request) {
