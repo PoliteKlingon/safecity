@@ -17,7 +17,7 @@ const Header = () => {
   };
 
   return (
-    <header className="navbar bg-teal-800 fixed top-0 left-0">
+    <header className="navbar z-50 bg-teal-800 fixed top-0 left-0">
       <div className="flex-1">
         <a className="text-xl ml-4">SafeCity</a>
       </div>
