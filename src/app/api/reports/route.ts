@@ -4,40 +4,6 @@ import { loginUserSchema } from "@/schemas/user";
 import { HomeFormType, homeFormSchema } from "@/schemas/homeForm";
 import { parse } from "path";
 
-const getReports = async () => {
-  return (await sql`SELECT * FROM reports`).rows;
-};
-
-const parsePostgresArray = (arrayString: string): string[] => {
-  console.log("ARR", arrayString);
-  
-    // Remove the surrounding curly braces
-  const trimmedString = arrayString.slice(1, -1);
-
-  // Split the string by commas, but handle escaping
-  const resultArray = [];
-  let currentElement = "";
-  let inQuotes = false;
-
-  for (let i = 0; i < trimmedString.length; i++) {
-    const char = trimmedString[i];
-
-    if (char === '"' && (i === 0 || trimmedString[i - 1] !== "\\")) {
-      inQuotes = !inQuotes;
-    } else if (char === "," && !inQuotes) {
-      resultArray.push(currentElement.replace(/\\(.)/g, "$1"));
-      currentElement = "";
-    } else {
-      currentElement += char;
-    }
-  }
-
-  // Add the last element
-  resultArray.push(currentElement.replace(/\\(.)/g, "$1"));
-
-  return resultArray;
-};
-
 const insertReport = async (report: HomeFormType) => {
   const formattedPhotos = `{${report.photos.map((photo) => `"${photo}"`).join(",")}}`;
   return await sql`
@@ -80,19 +46,4 @@ export async function POST(request: Request) {
   }
 }
 
-export async function GET(request: Request) {
-  try {
-    const reports = await getReports();
-    if (reports) {
-      return new Response(
-        JSON.stringify(reports),
-        { status: 200 },
-      );
-    } else {
-      return new Response("Not found", { status: 404 });
-    }
-  } catch (e) {
-    console.log(e);
-    return new Response("Internal error", { status: 500 });
-  }
-}
+

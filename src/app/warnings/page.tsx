@@ -2,7 +2,7 @@
 
 import Loading from "@/components/Loading";
 import TipsDialog from "@/components/warnings/TipsDialog";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import {
   ClockIcon,
@@ -17,44 +17,48 @@ import {
   SirenIcon,
 } from "lucide-react";
 import { getDistance } from "geolib";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Location, useLocationContext } from "@/providers/LocationProvider";
+import { HomeFormType } from "@/schemas/homeForm";
 
 const WarningsPage = () => {
-  const warnings = useQuery({
-    queryKey: ["get-warnings"],
-    queryFn: async () => axios.get("/api/reports"),
+  const { location } = useLocationContext();
+  const [warnings, setWarnings] = useState<null | HomeFormType[]>(null);
+
+  const postWarnings = useMutation({
+    mutationFn: async (data: Location) =>
+      axios.post("/api/reports/query", data),
   });
 
-  const [coords, setCoords] = useState<any>(null);
+  const getWarnings = async (location: Location) => {
+    try {
+      const res = await postWarnings.mutateAsync(location);
 
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      //success
-      (position) => {
-        setCoords({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        });
-      },
-      //error
-      () => {
-        console.log("Not able to find location");
-      },
+      setWarnings(res.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    if (location) {
+      getWarnings(location);
+    }
+  }, [location]);
+
+  if (!location) {
+    return (
+      <div className="flex flex-row gap-3">
+        <Loading />
+        Getting your current location...
+      </div>
     );
   }
 
-  //TODO fetchnout az potom co se nacte lokace
-  //TODO podle lokace a casu vracet jen nektery data
-
-  if (warnings.isLoading) return <Loading />;
-  if (warnings.isError)
+  if (postWarnings.isPending && !warnings) return <Loading />;
+  if (postWarnings.isError)
     return <div>There was an error while fetching the data.</div>;
-  if (
-    !warnings.data ||
-    !warnings.data.data ||
-    !Array.isArray(warnings.data.data) ||
-    warnings.data.data.length === 0
-  )
+  if (!warnings || !Array.isArray(warnings) || warnings.length === 0)
     return <div>There are no warnings.</div>;
 
   return (
@@ -75,13 +79,15 @@ const WarningsPage = () => {
       <div className="my-2 p-2 border-b-[1px] border-grey-500 text-2xl">
         Reported incidents near you
       </div>
-      {warnings.data.data.map((warning) => (
+      {warnings.map((warning) => (
         <div
           className="my-2 p-2 border-b-[1px] border-grey-500 relative"
           key={warning.photos[0]}
         >
           <div className="absolute top-0 right-0 m-2 text-accent flex flex-row justify-end">
+            {/* @ts-ignore */}
             {warning.contactpolice && <SirenIcon />}
+            {/* @ts-ignore */}
             {warning.ismunicipality && <MegaphoneIcon />}
           </div>
           <div className="flex flex-row gap-2 shrink-0 h-40 overflow-auto">
@@ -102,12 +108,12 @@ const WarningsPage = () => {
             </div>
             <span className="my-2 text-md">
               {warning.address ?? "unknown"}{" "}
-              {coords &&
+              {location &&
                 `(${
                   getDistance(
                     {
-                      latitude: warning.latitude,
-                      longitude: warning.longitude,
+                      latitude: location.latitude,
+                      longitude: location.longitude,
                     },
                     {
                       latitude: warning.latitude,

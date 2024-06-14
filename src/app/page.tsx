@@ -1,27 +1,22 @@
 "use client";
-/* global google */
 
 import { HomeFormType, homeFormSchema } from "@/schemas/homeForm";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Camera from "@/components/home/Camera";
 import { FormProvider, useForm } from "react-hook-form";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { getHint } from "@/components/home/hints";
 import FormTextArea from "@/components/form/FormTextArea";
 import FormBoolean from "@/components/form/FormBoolean";
-import {
-  CheckIcon,
-  PlusIcon,
-  TrashIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
+import { CheckIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { ErrorMessage } from "@hookform/error-message";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import Loading from "@/components/Loading";
 import FormText from "@/components/form/FormText";
-import { Loader } from "@googlemaps/js-api-loader";
 import {} from "@react-google-maps/api";
+import Geoloader from "@/components/home/Geoloader";
+import { useLocationContext } from "@/providers/LocationProvider";
 
 const HomePage = () => {
   const postWarning = useMutation({
@@ -35,7 +30,7 @@ const HomePage = () => {
       contactPolice: false,
       latitude: -999,
       longitude: -999,
-      date: new Date().toString(),
+      date: new Date().toISOString(),
       isMunicipality: false,
     },
   });
@@ -45,59 +40,21 @@ const HomePage = () => {
   const latitude: number = methods.watch("latitude");
   const longitude: number = methods.watch("longitude");
 
+  const { location } = useLocationContext();
+
+  useEffect(() => {
+    if (location) {
+      methods.setValue("latitude", location.latitude);
+      methods.setValue("longitude", location.longitude);
+    }
+  }, [location]);
+
   const onSubmit = (data: HomeFormType) => {
     console.log(data);
     postWarning.mutate(data);
     methods.reset();
     setIsCameraOpen(true);
   };
-
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      //success
-      (position) => {
-        methods.setValue("latitude", position.coords.latitude);
-        methods.setValue("longitude", position.coords.longitude);
-      },
-      //error
-      () => {
-        console.log("Not able to find location");
-      },
-    );
-  }
-
-  const [geocoder, setGeocoder] = useState<any>(null);
-  useEffect(() => {
-    const loader = new Loader({
-      apiKey: process.env.NEXT_PUBLIC_GOOGLE_KEY!,
-      version: "weekly",
-    });
-    loader.load().then(() => {
-      // Initialize the geocoder after the API is loaded
-      setGeocoder(new google.maps.Geocoder());
-    });
-  }, []);
-  useEffect(() => {
-    // Ensure geocoder and address are available
-    if (!geocoder || !latitude || latitude < -180) return;
-
-    geocoder.geocode(
-      {
-        location: new google.maps.LatLng(latitude, longitude),
-      },
-      (results: any, status: any) => {
-        if (status == "OK") {
-          console.log("RES", results);
-
-          methods.setValue("address", results[0].formatted_address);
-        } else {
-          alert(
-            "Geocode was not successful for the following reason: " + status,
-          );
-        }
-      },
-    );
-  }, [latitude, geocoder]);
 
   return (
     <>
@@ -150,6 +107,12 @@ const HomePage = () => {
             name="address"
             label="Approximate address"
             className="w-full -mt-6 -mb-2"
+          />
+
+          <Geoloader
+            latitude={latitude}
+            longitude={longitude}
+            setAddress={(addr) => methods.setValue("address", addr)}
           />
 
           <FormBoolean
