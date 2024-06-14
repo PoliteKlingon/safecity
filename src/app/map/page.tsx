@@ -1,11 +1,14 @@
+'use client';
+
+import { useLocationContext } from '@/providers/LocationProvider';
 import React from 'react';
 
 type Props = {};
 
 const MapPage = (props: Props) => {
-  // Example location (Přívrat)
-  const y = '49.21812715295444';
-  const x = '16.57464698340748';
+  const { location } = useLocationContext();
+  const y = location?.latitude || '49.19486660020329';
+  const x = location?.longitude || '16.60823660793101';
   const markerTitle = 'Your location';
   return (
     <div className="h-[calc(100%-48px)]">
@@ -20,8 +23,9 @@ const MapPage = (props: Props) => {
           title="See data source"
           target="_blank"
         >
-          https://services6.arcgis.com/fUWVlHWZNxUvTUh8/ArcGIS/rest/services/PrestupkyCelkovaHustota/FeatureServer
-        </a>
+          ArcGIS REST Services Directory
+        </a>{' '}
+        and visualized by ArcGIS maps software.
       </small>
       <iframe
         className="w-full h-full mt-2"
