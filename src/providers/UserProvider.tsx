@@ -48,7 +48,7 @@ const UserProvider = ({ children }: PropsWithChildren) => {
         window.sessionStorage.removeItem("user");
       }
     }
-  }, [user]);
+  }, [user, isLoaded]);
 
   return (
     <UserContext.Provider value={{ user, setUser }}>

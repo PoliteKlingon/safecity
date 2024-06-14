@@ -44,7 +44,7 @@ const WarningsPage = () => {
     if (location) {
       getWarnings(location);
     }
-  }, [location]);
+  }, [location, getWarnings]);
 
   if (!location) {
     return (

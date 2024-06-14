@@ -40,7 +40,7 @@ const Geoloader = ({ latitude, longitude, setAddress }: Props) => {
         }
       },
     );
-  }, [latitude, geocoder]);
+  }, [latitude, longitude, setAddress, geocoder]);
   return <div />;
 };
 
