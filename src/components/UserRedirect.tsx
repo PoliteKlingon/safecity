@@ -18,7 +18,7 @@ const UserRedirect = () => {
     if (!user && pathname !== "/login" && !isLogout) {
       redirect("/login");
     }
-  }, [user, pathname]);
+  }, [user, pathname, isLogout]);
 
   return <div />;
 };

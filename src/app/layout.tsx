@@ -5,6 +5,8 @@ import Header from "@/components/Header";
 import Navigation from "@/components/Navigation";
 import Providers from "@/providers/Providers";
 import UserRedirect from "@/components/UserRedirect";
+import { Suspense } from "react";
+import Loading from "@/components/Loading";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,7 +25,9 @@ export default function RootLayout({
       <body className={inter.className}>
         <div className="h-screen w-screen">
           <Providers>
-            <UserRedirect />
+            <Suspense fallback={<Loading />}>
+              <UserRedirect />
+            </Suspense>
             <Header />
             <main className="overflow-y-auto pt-16 pb-32 h-screen">
               {children}
