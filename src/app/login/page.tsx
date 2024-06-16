@@ -25,12 +25,14 @@ const LoginPage = () => {
       setUser(null);
       redirect("/login");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLogout]);
 
   useEffect(() => {
     if (user && !isLogout) {
       redirect("/");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const methods = useForm<loginUser>({
