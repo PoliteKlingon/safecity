@@ -25,7 +25,9 @@ export default function RootLayout({
           <Providers>
             <UserRedirect />
             <Header />
-            <main className="overflow-y-auto py-16 h-screen">{children}</main>
+            <main className="overflow-y-auto pt-16 pb-32 h-screen">
+              {children}
+            </main>
             <Navigation />
           </Providers>
         </div>

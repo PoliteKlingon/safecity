@@ -15,13 +15,16 @@ const getReports = async (
   // ChatGPT generated, not tested
   return (
     await sql`
-      SELECT 
-        *, 
-        ( 6371 * acos( cos( radians(${latitude}) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(${longitude}) ) + sin( radians(${latitude}) ) * sin( radians( latitude ) ) ) ) AS distance 
-      FROM reports 
+      SELECT *
+      FROM (
+        SELECT 
+          *, 
+          ( 6371 * acos( cos( radians(${latitude}) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(${longitude}) ) + sin( radians(${latitude}) ) * sin( radians( latitude ) ) ) ) AS distance 
+        FROM reports 
+        WHERE 
+          date >= ${eightHoursAgo.toISOString()}
+      ) AS subquery
       WHERE 
-        date >= ${eightHoursAgo.toISOString()} 
-      HAVING 
         distance <= ${distanceThreshold}
     `
   ).rows;

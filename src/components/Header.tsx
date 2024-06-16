@@ -2,9 +2,10 @@
 import { useUserContext } from "@/providers/UserProvider";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 const Header = () => {
-  const { user, setUser } = useUserContext();
+  const { user } = useUserContext();
 
   // hide the dropdown when clicked
   // credit https://medium.com/@malikhamzav/how-to-close-daisyui-dropdown-on-click-ea65c5749410
@@ -43,12 +44,9 @@ const Header = () => {
                 </Link>
               </li>
               <li>
-                <Link onClick={handleClick} href="/settings">
-                  Settings
+                <Link onClick={handleClick} href="/login?logout">
+                  Logout
                 </Link>
-              </li>
-              <li>
-                <a onClick={() => setUser(null)}>Logout</a>
               </li>
             </ul>
           </div>

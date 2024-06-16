@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useUserContext } from "@/providers/UserProvider";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
-import { redirect, usePathname } from "next/navigation";
+import { redirect, usePathname, useSearchParams } from "next/navigation";
 import FormText from "@/components/form/FormText";
 
 type Tab = "sign-in" | "sign-up";
@@ -17,9 +17,18 @@ const LoginPage = () => {
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [successMessage, setSuccessMessage] = useState<string>("");
   const { user, setUser } = useUserContext();
+  const searchParams = useSearchParams();
+  const isLogout = searchParams.get("logout") !== null;
 
   useEffect(() => {
-    if (user) {
+    if (isLogout) {
+      setUser(null);
+      redirect("/login");
+    }
+  }, [isLogout]);
+
+  useEffect(() => {
+    if (user && !isLogout) {
       redirect("/");
     }
   }, [user]);
