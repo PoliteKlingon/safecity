@@ -33,7 +33,7 @@ const LoginPage = () => {
     methods.reset();
     methods.setValue("type", tab);
     setErrorMessage("");
-  }, [tab]);
+  }, [tab, methods]);
 
   useEffect(() => {
     if (errorMessage) {

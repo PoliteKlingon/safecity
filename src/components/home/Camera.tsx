@@ -6,7 +6,10 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import React, { useRef, useState } from "react";
-import { Camera as CameraComponent, CameraType } from "react-camera-pro";
+import {
+  Camera as CameraComponent,
+  CameraType,
+} from "react-camera-pro-with-torch";
 
 type Props = {
   onShot: (photo: string | undefined) => void;
@@ -23,8 +26,8 @@ const Camera = ({ onShot, isOpen, canBeClosed, close }: Props) => {
     <div className="z-20">
       <CameraComponent
         ref={cameraRef}
-        //numberOfBackCamerasCallback={setNumberOfCameras}
-        //facingMode="back"
+        numberOfBackCamerasCallback={setNumberOfCameras}
+        facingMode="back"
         errorMessages={{
           noCameraAccessible: "No camera found",
           permissionDenied: "Permission to use the camera was denied",
@@ -51,8 +54,8 @@ const Camera = ({ onShot, isOpen, canBeClosed, close }: Props) => {
         <button
           type="button"
           className={`btn bg-teal-700 rounded-full w-12 h-12 p-0`}
-          // disabled={!cameraRef?.current?.flashStatus().valueOf()}
-          // onClick={() => cameraRef?.current?.toggleTorch()}
+          disabled={!cameraRef?.current?.flashStatus().valueOf()}
+          onClick={() => cameraRef?.current?.toggleTorch()}
         >
           <BoltIcon width={20} height={20} />
         </button>

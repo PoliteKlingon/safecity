@@ -1,26 +1,26 @@
-'use client';
+"use client";
 
-import { HomeFormType, homeFormSchema } from '@/schemas/homeForm';
-import { zodResolver } from '@hookform/resolvers/zod';
-import Camera from '@/components/home/Camera';
-import { FormProvider, useForm } from 'react-hook-form';
-import { useEffect, useState } from 'react';
-import { getHint } from '@/components/home/hints';
-import FormTextArea from '@/components/form/FormTextArea';
-import FormBoolean from '@/components/form/FormBoolean';
-import { CheckIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
-import { ErrorMessage } from '@hookform/error-message';
-import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-import Loading from '@/components/Loading';
-import FormText from '@/components/form/FormText';
-import {} from '@react-google-maps/api';
-import Geoloader from '@/components/home/Geoloader';
-import { useLocationContext } from '@/providers/LocationProvider';
+import { HomeFormType, homeFormSchema } from "@/schemas/homeForm";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Camera from "@/components/home/Camera";
+import { FormProvider, useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { getHint } from "@/components/home/hints";
+import FormTextArea from "@/components/form/FormTextArea";
+import FormBoolean from "@/components/form/FormBoolean";
+import { CheckIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { ErrorMessage } from "@hookform/error-message";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import Loading from "@/components/Loading";
+import FormText from "@/components/form/FormText";
+import {} from "@react-google-maps/api";
+import Geoloader from "@/components/home/Geoloader";
+import { useLocationContext } from "@/providers/LocationProvider";
 
 const HomePage = () => {
   const postWarning = useMutation({
-    mutationFn: (data: HomeFormType) => axios.post('/api/reports', data),
+    mutationFn: (data: HomeFormType) => axios.post("/api/reports", data),
   });
 
   const methods = useForm<HomeFormType>({
@@ -34,20 +34,20 @@ const HomePage = () => {
       isMunicipality: false,
     },
   });
-  const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [isCameraOpen, setIsCameraOpen] = useState(true);
 
-  const photos: string[] = methods.watch('photos');
-  const latitude: number = methods.watch('latitude');
-  const longitude: number = methods.watch('longitude');
+  const photos: string[] = methods.watch("photos");
+  const latitude: number = methods.watch("latitude");
+  const longitude: number = methods.watch("longitude");
 
   const { location } = useLocationContext();
 
   useEffect(() => {
     if (location) {
-      methods.setValue('latitude', location.latitude);
-      methods.setValue('longitude', location.longitude);
+      methods.setValue("latitude", location.latitude);
+      methods.setValue("longitude", location.longitude);
     }
-  }, [location]);
+  }, [location, methods]);
 
   const onSubmit = (data: HomeFormType) => {
     console.log(data);
@@ -68,13 +68,17 @@ const HomePage = () => {
               photos.length > 0 &&
               photos.map((photo: string, index: number) => (
                 <div className="relative shrink-0" key={index}>
-                  <img className="h-52 rounded-lg" src={photo} />
+                  <img
+                    className="h-52 rounded-lg"
+                    src={photo}
+                    alt="uploaded photo"
+                  />
                   <button
                     type="button"
                     className="btn btn-link absolute top-0 left-0"
                     onClick={() => {
                       photos.splice(index, 1);
-                      methods.setValue('photos', photos);
+                      methods.setValue("photos", photos);
                     }}
                   >
                     <TrashIcon width={20} height={20} />
@@ -112,7 +116,7 @@ const HomePage = () => {
           <Geoloader
             latitude={latitude}
             longitude={longitude}
-            setAddress={(addr) => methods.setValue('address', addr)}
+            setAddress={(addr) => methods.setValue("address", addr)}
           />
 
           <FormBoolean
@@ -143,7 +147,7 @@ const HomePage = () => {
               if (photo) {
                 photos.push(photo);
                 //@ts-ignore
-                methods.setValue('photos', photos);
+                methods.setValue("photos", photos);
                 setIsCameraOpen(false);
               }
             }}

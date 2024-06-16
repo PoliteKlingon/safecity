@@ -30,21 +30,22 @@ const WarningsPage = () => {
       axios.post("/api/reports/query", data),
   });
 
-  const getWarnings = async (location: Location) => {
-    try {
-      const res = await postWarnings.mutateAsync(location);
-
-      setWarnings(res.data);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
   useEffect(() => {
+    const getWarnings = async (location: Location) => {
+      try {
+        const res = await postWarnings.mutateAsync(location);
+
+        setWarnings(res.data);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
     if (location) {
       getWarnings(location);
     }
-  }, [location, getWarnings]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location]);
 
   if (!location) {
     return (
@@ -92,7 +93,7 @@ const WarningsPage = () => {
           </div>
           <div className="flex flex-row gap-2 shrink-0 h-40 overflow-auto">
             {warning.photos.map((photo: string) => {
-              return <img key={photo} src={photo} />;
+              return <img key={photo} src={photo} alt="uploaded photo" />;
             })}
           </div>
           <div className="flex flex-row gap-2 items-center">
