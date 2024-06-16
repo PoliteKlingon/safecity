@@ -21,7 +21,8 @@ const LoginPage = ({
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [successMessage, setSuccessMessage] = useState<string>("");
   const { user, setUser } = useUserContext();
-  const isLogout = searchParams["logout"] !== null;
+  const logoutParam = searchParams["logout"];
+  const isLogout = logoutParam !== null && logoutParam !== undefined;
 
   useEffect(() => {
     if (isLogout) {

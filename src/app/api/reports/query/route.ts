@@ -25,7 +25,7 @@ const getReports = async (
           date >= ${eightHoursAgo.toISOString()}
       ) AS subquery
       WHERE 
-        subquery.distance <= ${distanceThreshold}
+        distance <= ${distanceThreshold}
     `
   ).rows;
 };
